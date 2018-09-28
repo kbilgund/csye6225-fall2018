@@ -1,7 +1,7 @@
 # AWS Cloud Formation using Script
 ## Prerequisites:
 ### jq- 
-
+Command to install
 `brew install jq`
 
 ## csye6225-aws-networking-teardown.sh-
