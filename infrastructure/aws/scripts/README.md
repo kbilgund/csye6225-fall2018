@@ -1,7 +1,7 @@
 # AWS Cloud Formation using Script
 ## Prerequisites:
 ### AWS-cli:
-Installing the AWS Command Line Interface[https://docs.aws.amazon.com/cli/latest/userguide/installing.html]<br>
+Installing the [AWS](https://docs.aws.amazon.com/cli/latest/userguide/installing.html) Command Line Interface<br>
 ### jq:
 Installation the jq<br>
 `sudo dnf install jq`
