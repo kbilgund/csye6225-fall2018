@@ -1,3 +1,3 @@
+## AWS Cloud Formation using scripting.
 
-## Using jq
-1. aws cloud formation
+used jq
