@@ -7,4 +7,4 @@ Installation the jq<br>
 `sudo dnf install jq`
 
 ## csye6225-aws-networking-teardown.sh-
-It is used to delete the whole infrastructure we created using the setup commmand. It takes an input for STACK_NAME which is compare with all the description of VPC, Internet Gateway and Route Table and delete them in a proper sequence.
+It is used to delete the whole infrastructure we created using the setup commmand. It takes an input for *STACK_NAME* which is compare with all the description of VPC, Internet Gateway and Route Table and delete them in a proper sequence.
