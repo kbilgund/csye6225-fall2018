@@ -2,6 +2,11 @@
 
 Creating custom command for bash files. `chmod +x` FileName
 
+## Prerequisites:
+### AWS-cli:
+Installing the [AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/installing.html)
+
+
 ## csye6225-aws-cf-create-stack.sh:
 It is used to create the whole infrastructure using the template JSON file as an input. This command takes one input as STACK_NAME which will be used to set the names of- VPC, Internet Gateway, RouteTable
 
