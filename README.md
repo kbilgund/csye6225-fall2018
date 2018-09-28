@@ -13,9 +13,13 @@ mysql -u root
 
 ### Create user Database and create a DB user
 create database db_example;
+
 create user 'springuser'@'localhost' identified by 'ThePassword';
+
 grant all on db_example.* to 'springuser'@'localhost';
+
 USE db_example;
+
 show tables;
 
 ### Running application
