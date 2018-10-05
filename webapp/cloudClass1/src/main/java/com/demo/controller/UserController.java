@@ -35,11 +35,13 @@ public class UserController {
 
 
     @RequestMapping(method = RequestMethod.GET )
-    public String getAllUsers(){
+    public ResponseEntity<?> getAllUsers(){
 
         LocalDateTime currentTime = LocalDateTime.now();
 
-        return String.valueOf(currentTime);
+     //   return String.valueOf(currentTime);
+
+        return ResponseEntity.ok(currentTime);
     }
 
     @RequestMapping(value="/register",method = RequestMethod.POST )
