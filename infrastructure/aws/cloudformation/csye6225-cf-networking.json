@@ -8,10 +8,12 @@
        "InternetGatewayName": {
            "Type": "String"
       },
-      "RouteTableName":{
+      "PublicRouteTableName":{
+           "Type": "String"
+      },
+      "PrivateRouteTableName":{
            "Type": "String"
       }
-
 },
 
 "Resources": {
@@ -119,7 +121,7 @@
                     "Ref": "InternetGateway"
                 }
             }
-        },"RouteTable": {
+        },"PublicRouteTable": {
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
                 "VpcId": {
@@ -129,7 +131,23 @@
                     {
                         "Key": "Name",
                         "Value": {
-                            "Ref": "RouteTableName"
+                            "Ref": "PublicRouteTableName"
+                        }
+                    }
+                ]
+            }
+        },
+        "PrivateRouteTable": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "PrivateRouteTableName"
                         }
                     }
                 ]
@@ -142,7 +160,7 @@
                 "Ref" : "Subnet1"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
               }
             }
         },
@@ -153,7 +171,7 @@
                 "Ref" : "Subnet2"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
               }
             }
         },
@@ -164,7 +182,40 @@
                 "Ref" : "Subnet3"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
+              }
+            }
+        },
+        "Subnet4Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet4"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
+              }
+            }
+        },
+        "Subnet5Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet5"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
+              }
+            }
+        },
+        "Subnet6Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet6"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
               }
             }
         },
@@ -176,7 +227,7 @@
                     "Ref": "InternetGateway"
                 },
                 "RouteTableId": {
-                    "Ref": "RouteTable"
+                    "Ref": "PublicRouteTable"
                 }
             }
         }
