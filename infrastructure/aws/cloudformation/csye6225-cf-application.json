@@ -1,0 +1,143 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Description" : "Application Stack",
+  "Parameters" : {
+    "VpcId": {
+        "Type": "String"
+    },
+    "InstanceSubnetId": {
+        "Type": "String"
+    },
+    "GroupSubnetId2": {
+      "Type": "String"
+    },
+    "GroupSubnetId1": {
+      "Type": "String"
+    },
+    "DomainName" :{
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "WebAppSecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+              "Tags": [
+                  {
+                      "Key": "Name",
+                      "Value": "csye6225-webapp"
+                  }
+              ],
+                  "GroupDescription" : "Enable HTTP access on the 22, 80 and 443 port",
+                  "VpcId" : { "Ref" : "VpcId" },
+                  "SecurityGroupIngress" : [ {
+                    "IpProtocol" : "tcp",
+                        "FromPort" : "22",
+                        "ToPort" : "22",
+                        "CidrIp" : "0.0.0.0/0"},
+                      {
+                        "IpProtocol" : "tcp",
+                          "FromPort" : "80",
+                          "ToPort" : "80",
+                          "CidrIp" : "0.0.0.0/0"},
+                      {
+                        "IpProtocol" : "tcp",
+                          "FromPort" : "443",
+                          "ToPort" : "443",
+                          "CidrIp" : "0.0.0.0/0"},
+                      ]
+                    }
+                  },
+      "EC2Instance": {
+          "Type": "AWS::EC2::Instance",
+            "Properties": {
+              "Tags": [
+                  {
+                      "Key": "Name",
+                      "Value": "centOS"
+                  }
+              ],
+              
+                  "ImageId": "ami-9887c6e7",
+                        "SubnetId": {
+                                "Ref": "InstanceSubnetId"
+                            },
+                        "InstanceType": "t2.micro",
+                        "SecurityGroupIds": [
+                                {
+                                    "Ref": "WebAppSecurityGroup"
+                                }
+                            ]
+                        }
+                    },
+                    "DBSecurityGroup" : {
+                            "Type" : "AWS::EC2::SecurityGroup",
+                            "Properties" : {
+                              "Tags": [
+                                  {
+                                      "Key": "Name",
+                                      "Value": "csye6225-rds"
+                                  }
+                              ],
+                            "GroupDescription" : "Created from the RDS Management Console",
+                            "VpcId" : { "Ref" : "VpcId" },
+                            "SecurityGroupIngress" : [ {
+                              "IpProtocol" : "tcp",
+                              "FromPort" : "3306",
+                              "ToPort" : "3306",
+                              "CidrIp" : "0.0.0.0/0"}
+                                ]
+                            }
+                      },
+                      "DBTable": {
+                          "Type": "AWS::DynamoDB::Table",
+                          "Properties": {
+                            "TableName": "csye6225",
+                            "AttributeDefinitions" : [
+                              {
+                                "AttributeName" : "id",
+                                "AttributeType" : "S"
+                            }],
+                            "KeySchema" : [
+                              {
+                                "AttributeName" : "id",
+                                "KeyType" : "HASH"
+                              }
+                            ],
+                            "ProvisionedThroughput" : {
+                                "ReadCapacityUnits" : "5",
+                                "WriteCapacityUnits" : "5"
+                              }
+                          }
+                      },
+                      "S3Bucket": {
+                          "Type": "AWS::S3::Bucket",
+                          "Properties": {"BucketName" : {"Ref": "DomainName"}}
+                      },
+
+                      "DBInstance" : {
+                        "Type" : "AWS::RDS::DBInstance",
+                        "Properties" : {
+                          "DBName" : "csye6225",
+                          "AllocatedStorage" : "20",
+                          "DBInstanceClass" : "db.t2.medium",
+                          "Engine" : "MySQL",
+                          "DBInstanceIdentifier": "csye6225-spring2018",
+                          "MasterUsername" : "csye6225master",
+                          "MasterUserPassword" : "csye6225password",
+                          "MultiAZ": "False",
+                          "PubliclyAccessible":"False",
+                          "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
+                        }
+                      },
+                      "DBSubnetGroup" : {
+                       "Type" : "AWS::RDS::DBSubnetGroup",
+                       "Properties" : {
+                          "DBSubnetGroupDescription" : "DBSubnetGroup",
+                          "SubnetIds" : [ {"Ref": "GroupSubnetId1"}, {"Ref": "GroupSubnetId2"} ],
+                          "Tags" : [ {"Key" : "Name", "Value" : "Subnet for RDS instances"} ]
+                       }
+                    }
+}
+
+}
