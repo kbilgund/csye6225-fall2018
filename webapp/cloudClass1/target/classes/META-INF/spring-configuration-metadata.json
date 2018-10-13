@@ -1,0 +1,19 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.demo.storage.StorageProperties",
+      "name": "storage",
+      "type": "com.demo.storage.StorageProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.demo.storage.StorageProperties",
+      "defaultValue": "upload-dir",
+      "name": "storage.location",
+      "description": "Folder location for storing files",
+      "type": "java.lang.String"
+    }
+  ]
+}
