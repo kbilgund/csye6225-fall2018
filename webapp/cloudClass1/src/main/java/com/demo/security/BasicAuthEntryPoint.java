@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 public class BasicAuthEntryPoint extends BasicAuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authEx) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
         PrintWriter writer = response.getWriter();

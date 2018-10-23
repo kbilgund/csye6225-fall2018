@@ -41,7 +41,7 @@ public class S3FileSystemStorageService implements StorageService{
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         try {
             if (file.isEmpty()) {
-                System.out.println("");
+                System.out.println();
                 throw new StorageException("Failed to store empty file " + filename);
 
 
@@ -64,7 +64,7 @@ public class S3FileSystemStorageService implements StorageService{
 
         AmazonS3 s3client = AmazonS3ClientBuilder
                 .standard()
-                .withRegion(Regions.US_EAST_2)
+                .withRegion(Regions.US_EAST_1)
                 .build();
 
         String name = file.getOriginalFilename();
@@ -73,14 +73,14 @@ public class S3FileSystemStorageService implements StorageService{
         System.out.println("debug" + file_temp.getAbsolutePath());
 
         s3client.putObject(
-                "attachmentcsye6225",
+                "csye6225-fall2018-bilgundik.csye6225.com",
                 name,
                 file_temp
         );
 
         file_temp.delete();
 
-        String fileLink =  s3client.getUrl("attachmentcsye6225", name).toExternalForm();
+        String fileLink =  s3client.getUrl("csye6225-fall2018-bilgundik.csye6225.com", name).toExternalForm();
 
 
 
@@ -122,7 +122,7 @@ public class S3FileSystemStorageService implements StorageService{
 
         AmazonS3 s3client = AmazonS3ClientBuilder
                 .standard()
-                .withRegion(Regions.US_EAST_2)
+                .withRegion(Regions.US_EAST_1)
                 .build();
 
         System.out.println("debug s3" + filePath);
@@ -131,7 +131,7 @@ public class S3FileSystemStorageService implements StorageService{
      //   System.out.println("resource key "+resourceKey[resourceKey.length-1]);
 
         try {
-            s3client.deleteObject("attachmentcsye6225", s3Key);
+            s3client.deleteObject("csye6225-fall2018-bilgundik.csye6225.com", s3Key);
             return true;
         } catch (Exception e) {
             return false;

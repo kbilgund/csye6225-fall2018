@@ -57,7 +57,7 @@ public class FileSystemStorageService implements StorageService {
         System.out.println(rootLocation.toUri());
         System.out.println(rootLocation.toString());
 
-        return String.valueOf(rootLocation.toUri()+filename);
+        return String.valueOf(rootLocation.toAbsolutePath()+"/"+filename);
     }
 
     @Override
@@ -104,16 +104,17 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Boolean deleteFile(String filePath) {
-
+        System.out.println("delete debug "+filePath);
         File file_temp = new File(filePath);
-
+        System.out.println("file exists "+file_temp.exists());
         try {
+
             file_temp.delete();
             return true;
         }
         catch (Exception e){
+            System.out.println("error in delete");
             return false;
-
         }
     }
 
