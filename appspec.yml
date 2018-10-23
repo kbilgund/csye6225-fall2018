@@ -1,0 +1,6 @@
+version: 0.0
+os: linux
+
+files:             
+  - source: ./target/cloudClass1-1.0-SNAPSHOT.jar
+    destination: /home/centos
