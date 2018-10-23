@@ -34,7 +34,7 @@ deploy:
     access_key_id: $access_key_id
     secret_access_key: $secret_key_access
     on:
-     branch: assignment_5
+     all_branches: true
   - provider: codedeploy
     access_key_id: $access_key_id
     bucket: csye6225-fall2018-bilgundik.csye6225.com
