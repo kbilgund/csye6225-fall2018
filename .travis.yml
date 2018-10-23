@@ -10,13 +10,14 @@ script:
   - pwd
   - ls
   - mvn package -q -f webapp/cloudClass1/pom.xml
-  - cd target/
+  - cd webapp/cloudClass1/target
   - ls -all
 
 after_success:
   - ls
   - cd ..
   - mkdir codedeploy_artifact
+  - pwd
   - cp ../*.yml .
   - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip target/cloudClass1-1.0-SNAPSHOT.jar *.sh *.yml
   - ls
