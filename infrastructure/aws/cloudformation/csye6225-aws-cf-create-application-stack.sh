@@ -12,7 +12,7 @@ echo $Domain
 
 VpcId=$(aws ec2 describe-vpcs --query  'Vpcs[?Tags[?Key==`Name`]|[?Value==`'${VpcName}'`]].VpcId' --output text)
 echo "VpcId" $VpcId
-ISubnetId=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VpcId"  --query 'Subnets[0].SubnetId' --output text)
+ISubnetId=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VpcId"  --query 'Subnets[3].SubnetId' --output text)
 echo "InstanceSubnetId" $ISubnetId
 PSubnetId=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VpcId"  --query 'Subnets[4].SubnetId' --output text)
 GSubnetId=$(aws ec2 describe-subnets --filters "Name=vpc-id,Values=$VpcId"  --query 'Subnets[5].SubnetId' --output text)

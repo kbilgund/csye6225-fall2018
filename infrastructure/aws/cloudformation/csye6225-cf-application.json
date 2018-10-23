@@ -57,17 +57,31 @@
                       "Value": "centOS"
                   }
               ],
-              
+              "KeyName":"ec2_centos",
                   "ImageId": "ami-9887c6e7",
+                  "NetworkInterfaces": [ {
+                      "AssociatePublicIpAddress": "true",
+                      "DeviceIndex": "0",
                         "SubnetId": {
                                 "Ref": "InstanceSubnetId"
                             },
+                            "GroupSet": [{"Ref": "WebAppSecurityGroup"}]
+                          }
+                        ],
+
                         "InstanceType": "t2.micro",
-                        "SecurityGroupIds": [
-                                {
-                                    "Ref": "WebAppSecurityGroup"
+
+                            "UserData": {
+                                "Fn::Base64": {
+                                    "Fn::Join": [
+                                        "\n",
+                                        [
+                                          "#!/bin/bash -xe ",
+                                          "yum install ruby ntp wget java-1.8.0-openjdk-devel mysql bind-utils git -y"
+                                        ]
+                                    ]
                                 }
-                            ]
+                          }
                         }
                     },
                     "DBSecurityGroup" : {
@@ -127,9 +141,11 @@
                           "MasterUserPassword" : "csye6225password",
                           "MultiAZ": "False",
                           "PubliclyAccessible":"False",
+                          "VPCSecurityGroups":[{"Ref": "DBSecurityGroup"}],
                           "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
                         }
                       },
+
                       "DBSubnetGroup" : {
                        "Type" : "AWS::RDS::DBSubnetGroup",
                        "Properties" : {

@@ -1,0 +1,84 @@
+{
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Description": "Creating IAM",
+   "Resources": {
+      "CDRole": {
+         "Type": "AWS::IAM::Role",
+         "Properties": {
+            "AssumeRolePolicyDocument": {
+               "Version" : "2012-10-17",
+               "Statement": [ {
+                  "Effect": "Allow",
+                  "Principal": {
+                     "Service": [ "codedeploy.amazonaws.com" ]
+                  },
+                  "Action": [ "sts:AssumeRole" ]
+               } ]
+            },
+            "RoleName":"CodeDeployServiceRole",
+            "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"]
+         }
+      },
+      "EC2Role": {
+         "Type": "AWS::IAM::Role",
+         "Properties": {
+            "AssumeRolePolicyDocument": {
+               "Version" : "2012-10-17",
+               "Statement": [ {
+                  "Effect": "Allow",
+                  "Principal": {
+                     "Service": [ "ec2.amazonaws.com" ]
+                  },
+                  "Action": [ "sts:AssumeRole" ]
+               } ]
+            },
+            "RoleName":"CodeDeployEC2ServiceRole",
+              "Policies": [ {
+                  "PolicyName": "CodeDeploy-EC2-S3",
+                  "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Action": [
+                            "s3:Get*",
+                            "s3:List*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": "*"
+                          }
+                        ]
+                      }
+
+                      } ]
+                    }
+                  },
+                  "CodeDeployApplication": {
+                    "Type": "AWS::CodeDeploy::Application",
+                    "Properties": {
+                      "ApplicationName" : "csye6225_cd",
+                      "ComputePlatform": "Server"
+                    }
+                  },
+                  "DeploymentGroup" : {
+                    "Type" : "AWS::CodeDeploy::DeploymentGroup",
+                    "Properties" : {
+                      "ApplicationName" : {"Ref" : "CodeDeployApplication"},
+                      "DeploymentGroupName": "csye6225_deploy",
+                      "ServiceRoleArn" : { "Fn::GetAtt" : [
+                        "CDRole", "Arn"
+                        ]
+                      },
+                      "DeploymentStyle": {
+                        "DeploymentType": "IN_PLACE",
+                        "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
+                      },
+                      "Ec2TagFilters" : [{
+                        "Key" : "Name",
+                        "Value" : "centOS",
+                        "Type" : "KEY_AND_VALUE"
+                      }],
+
+                      }
+                    }
+      }
+}
