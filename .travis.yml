@@ -38,8 +38,8 @@ deploy:
     bucket: csye6225-fall2018-bilgundik.csye6225.com
     key: csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip
     bundle_type: zip
-    application: CODE_DEPLOY_APPLICATION_NAME
-    deployment_group: CODE_DEPLOY_APPLICATION_GROUP
+    application: csye6225_cd
+    deployment_group: csye6225_deploy
     region: us-east-1
     secret_access_key: $secret_key_access
     wait-until-deployed: true
