@@ -8,10 +8,8 @@ install: true
 
 script:
   - pwd
-  - cd cloudClass1_attachments/
   - ls
-  - ls -all
-  - mvn package -q
+  - mvn package -q -f csye6225-fall2018/webapp/cloudClass1/pom.xml
   - cd target/
   - ls -all
 
