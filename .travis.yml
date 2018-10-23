@@ -19,7 +19,7 @@ after_success:
   - cd ..
   - mkdir codedeploy_artifact
   - pwd
-  - cp ../*.yml .
+  - cp ../../*.yml .
   - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip target/cloudClass1-1.0-SNAPSHOT.jar *.sh *.yml
   - ls
   - mv csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip codedeploy_artifact/
