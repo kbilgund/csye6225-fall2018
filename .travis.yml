@@ -1,1 +1,46 @@
+ilanguage: java
+jdk:
+  - oraclejdk8
 
+sudo: false
+
+install: true
+
+script:
+  - pwd
+  - cd cloudClass1_attachments/
+  - ls
+  - ls -all
+  - mvn package -q
+  - cd target/
+  - ls -all
+
+after_success:
+  - ls
+  - cd ..
+  - mkdir codedeploy_artifact
+  - cp ../*.yml .
+  - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip target/cloudClass1-1.0-SNAPSHOT.jar *.sh *.yml
+  - ls
+  - mv csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip codedeploy_artifact/
+  - ls codedeploy_artifact/
+  
+  
+deploy:
+  - provider: s3
+    local_dir: codedeploy_artifact
+    bucket: csye6225-fall2018-bilgundik.csye6225.com
+    region: us-east-1
+    skip_cleanup: true
+    access_key_id: $access_key_id
+    secret_access_key: $secret_key_access
+  - provider: codedeploy
+    access_key_id: $access_key_id
+    bucket: csye6225-fall2018-bilgundik.csye6225.com
+    key: csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip
+    bundle_type: zip
+    application: CODE_DEPLOY_APPLICATION_NAME
+    deployment_group: CODE_DEPLOY_APPLICATION_GROUP
+    region: us-east-1
+    secret_access_key: $secret_key_access
+    wait-until-deployed: true
