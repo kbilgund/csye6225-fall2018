@@ -10,3 +10,7 @@ hooks:
    - location: ./applicationStart.sh
      timeout: 180
      runas: centos
+  ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: centos
