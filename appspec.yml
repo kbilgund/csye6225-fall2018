@@ -8,5 +8,5 @@ files:
 hooks:
   ApplicationStart:
    - location: ./applicationStart.sh
-     timeout: 180
+     timeout: 60
      runas: centos
