@@ -6,6 +6,7 @@ files:
     destination: /home/centos/
 
 hooks:
-  - location: ./applicationStart.sh
-       timeout: 180
-       runas: centos
+  ApplicationStart:
+   - location: ./applicationStart.sh
+     timeout: 180
+     runas: centos
