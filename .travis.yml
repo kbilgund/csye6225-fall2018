@@ -14,7 +14,7 @@ script:
   - cd webapp/cloudClass1/target
   - pwd
   - ls -all
-  - pwd
+
 
 after_success:
   - ls
