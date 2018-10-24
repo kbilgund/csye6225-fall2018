@@ -3,4 +3,4 @@ os: linux
 
 files:             
   - source: ./target/cloudClass1-1.0-SNAPSHOT.jar
-    destination: /home/centos/temp/
+    destination: /home/centos/
