@@ -12,6 +12,7 @@ script:
   - mvn package -q -f webapp/cloudClass1/pom.xml
   - pwd
   - cd webapp/cloudClass1/target
+  - pwd
   - ls -all
   - pwd
 
