@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -31,7 +32,7 @@ public class FileSystemStorageService implements StorageService {
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
-    
+
     public static void testupload(){
         try {
             FileWriter fileWriter = new FileWriter("upload-dir/test.txt");
@@ -43,6 +44,7 @@ public class FileSystemStorageService implements StorageService {
         }
 
     }
+
 
     @Override
     public String store(MultipartFile file) {
