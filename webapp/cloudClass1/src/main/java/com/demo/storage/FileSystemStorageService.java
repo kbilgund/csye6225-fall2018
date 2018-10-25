@@ -31,6 +31,18 @@ public class FileSystemStorageService implements StorageService {
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
+    
+    public static void testupload(){
+        try {
+            FileWriter fileWriter = new FileWriter("upload-dir/test.txt");
+            fileWriter.write("testing");
+            fileWriter.close();
+        }catch (Exception e){
+
+            System.out.println("error in upload dir");
+        }
+
+    }
 
     @Override
     public String store(MultipartFile file) {
