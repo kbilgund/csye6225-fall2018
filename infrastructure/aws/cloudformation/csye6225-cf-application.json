@@ -99,9 +99,11 @@
 
                                           "cd /",
 
-                                          "/bin/echo 'export s3=\"",{"Ref": "DomainName"},"\"' >> app",
+                                          "/bin/echo 'export s3=\"",{"Ref": "DomainName"},"\"' | tr -d '\n' >> app",
 
-                                          "/bin/echo 'export db=\"",{"Fn::GetAtt": ["DBInstance","Endpoint.Address"]},"\"' >> app",
+                                          "/bin/echo '' >> app",
+
+                                          "/bin/echo 'export db=\"",{"Fn::GetAtt": ["DBInstance","Endpoint.Address"]},"\"' | tr -d '\n' >> app",
 
 
                                         ]
