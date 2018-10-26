@@ -33,7 +33,7 @@ public class UserDao {
 
 
     public Collection<User> getAllUsers(){
-        return this.Users.values();
+        return Users.values();
     }
 
     public User create(User user) {

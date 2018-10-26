@@ -11,6 +11,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -31,6 +32,19 @@ public class FileSystemStorageService implements StorageService {
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
+
+    public static void testupload(){
+        try {
+            FileWriter fileWriter = new FileWriter("upload-dir/test.txt");
+            fileWriter.write("testing");
+            fileWriter.close();
+        }catch (Exception e){
+
+            System.out.println("error in upload dir");
+        }
+
+    }
+
 
     @Override
     public String store(MultipartFile file) {
@@ -57,7 +71,7 @@ public class FileSystemStorageService implements StorageService {
         System.out.println(rootLocation.toUri());
         System.out.println(rootLocation.toString());
 
-        return String.valueOf(rootLocation.toUri()+filename);
+        return String.valueOf(rootLocation.toAbsolutePath()+"/"+filename);
     }
 
     @Override
@@ -104,16 +118,17 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Boolean deleteFile(String filePath) {
-
+        System.out.println("delete debug "+filePath);
         File file_temp = new File(filePath);
-
+        System.out.println("file exists "+file_temp.exists());
         try {
+
             file_temp.delete();
             return true;
         }
         catch (Exception e){
+            System.out.println("error in delete");
             return false;
-
         }
     }
 
