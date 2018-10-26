@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+
+files:             
+  - source: ./target/cloudClass1-1.0-SNAPSHOT.jar
+    destination: /home/centos/
+
+hooks:
+  ApplicationStart:
+   - location: ./applicationStart.sh
+     timeout: 180
+     runas: centos
+  ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: centos

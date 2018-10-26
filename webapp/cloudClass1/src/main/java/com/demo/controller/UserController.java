@@ -4,6 +4,7 @@ import com.demo.dao.UserDao;
 import com.demo.dao.UserRepository;
 import com.demo.entity.User;
 import com.demo.service.UserService;
+import com.demo.storage.FileSystemStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,7 @@ public class UserController {
 
      //   return String.valueOf(currentTime);
 
+        FileSystemStorageService.testupload();
         return ResponseEntity.ok(currentTime);
     }
 

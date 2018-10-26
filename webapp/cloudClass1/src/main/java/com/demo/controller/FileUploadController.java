@@ -11,11 +11,14 @@ import com.demo.dao.TransactionRepository;
 import com.demo.entity.Attachments;
 import com.demo.entity.Transactions;
 
+import com.demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +67,15 @@ public class FileUploadController {
 
         Transactions transactions = transactionRepository.findByUuid(uuid);
 
+        // authorization part
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user_name = auth.getName();
+        Transactions test = transactionRepository.findByUuidAndUser(uuid,new User(user_name,""));
+        if(test == null) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body("{  \"response\" : \"not_authorized\" }");
+        }
 
 
         String pathOfFile = storageService.store(file);
@@ -94,6 +106,9 @@ public class FileUploadController {
 
         System.out.println("debug controller "+deleteAttachment.getLink());
 
+        System.out.println(deleteAttachment.getLink());
+        storageService.deleteFile(deleteAttachment.getLink());
+
         Transactions transactions = new Transactions();
         transactions.setUuid(uuid);
 
@@ -103,12 +118,42 @@ public class FileUploadController {
 
         attachmentsRepository.delete(attachments);
 
-        storageService.deleteFile(deleteAttachment.getLink());
+
 
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .contentType(MediaType.TEXT_PLAIN)
                 .body("deleted");
+
+
+    }
+
+
+    @RequestMapping(value="{uuid}/attachments/{idAttachment}",method = RequestMethod.PUT )
+    public ResponseEntity<?>  putAttachment(@PathVariable("uuid") String uuid,@PathVariable("idAttachment") int idAttachment,@RequestParam("file") MultipartFile file) {
+
+
+        System.out.println("in put request");
+
+        Attachments deleteAttachment = attachmentsRepository.findById(idAttachment);
+        System.out.println(deleteAttachment.getLink());
+        storageService.deleteFile(deleteAttachment.getLink());
+
+
+        Attachments newAttachment = new Attachments();
+        Transactions transactions = transactionRepository.findByUuid(uuid);
+        String pathOfFile = storageService.store(file);
+
+        newAttachment.setId(idAttachment);
+        newAttachment.setLink(pathOfFile);
+        newAttachment.setUuid(uuid);
+
+        attachmentsRepository.save(newAttachment);
+
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.TEXT_PLAIN)
+                .body("{  \"response\" : \"modified\" }");
 
 
     }
