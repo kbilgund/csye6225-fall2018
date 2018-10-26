@@ -40,7 +40,10 @@
                   },
                 "AvailabilityZone" : "us-east-1a",
                 "CidrBlock": "10.0.0.0/24",
-                "Tags":[]
+                "Tags":[{
+                  "Key": "Name",
+                  "Value": "PublicSubnet"
+                  }]
             }
           },
           "Subnet2": {
@@ -73,7 +76,10 @@
                         },
                       "AvailabilityZone" : "us-east-1a",
                       "CidrBlock": "10.0.3.0/24",
-                      "Tags":[]
+                      "Tags":[{
+                        "Key": "Name",
+                        "Value": "PrivateSubnet1"
+                        }]
                   }
                 },
                 "Subnet5": {
@@ -84,7 +90,10 @@
                           },
                         "AvailabilityZone" : "us-east-1b",
                         "CidrBlock": "10.0.4.0/24",
-                        "Tags":[]
+                        "Tags":[{
+                          "Key": "Name",
+                          "Value": "PrivateSubnet2"
+                          }]
                     }
                   },
                   "Subnet6": {
@@ -95,7 +104,10 @@
                             },
                           "AvailabilityZone" : "us-east-1c",
                           "CidrBlock": "10.0.5.0/24",
-                          "Tags":[]
+                          "Tags":[{
+                            "Key": "Name",
+                            "Value": "PrivateSubnet3"
+                            }]
                       }
                     },
             "InternetGateway": {
