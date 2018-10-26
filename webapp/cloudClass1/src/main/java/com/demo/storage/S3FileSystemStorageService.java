@@ -4,6 +4,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -35,6 +36,9 @@ public class S3FileSystemStorageService implements StorageService{
     public S3FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
     }
+
+    @Value("${s3}")
+    public String bktname;
 
     @Override
     public String store(MultipartFile file) {
@@ -73,14 +77,14 @@ public class S3FileSystemStorageService implements StorageService{
         System.out.println("debug" + file_temp.getAbsolutePath());
 
         s3client.putObject(
-                "csye6225-fall2018-bilgundik.csye6225.com",
+                bktname,
                 name,
                 file_temp
         );
 
         file_temp.delete();
 
-        String fileLink =  s3client.getUrl("csye6225-fall2018-bilgundik.csye6225.com", name).toExternalForm();
+        String fileLink =  s3client.getUrl(bktname, name).toExternalForm();
 
 
 
@@ -131,7 +135,7 @@ public class S3FileSystemStorageService implements StorageService{
      //   System.out.println("resource key "+resourceKey[resourceKey.length-1]);
 
         try {
-            s3client.deleteObject("csye6225-fall2018-bilgundik.csye6225.com", s3Key);
+            s3client.deleteObject(bktname, s3Key);
             return true;
         } catch (Exception e) {
             return false;
