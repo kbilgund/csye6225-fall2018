@@ -1,6 +1,17 @@
 {
    "AWSTemplateFormatVersion": "2010-09-09",
-   "Description": "Creating IAM",
+   "Description": "CI/CD Stack",
+   "Parameters" : {
+     "DomainName" :{
+       "Type": "String"
+     },
+     "CDARN" :{
+       "Type": "String"
+     },
+     "CSARN" :{
+       "Type": "String"
+     }
+   },
    "Resources": {
       "CDRole": {
          "Type": "AWS::IAM::Role",
@@ -19,6 +30,10 @@
             "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"]
          }
       },
+      "S3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {"BucketName" : {"Ref": "DomainName"}}
+      },
       "EC2Role": {
          "Type": "AWS::IAM::Role",
          "Properties": {
@@ -33,10 +48,14 @@
                } ]
             },
             "RoleName":"CodeDeployEC2ServiceRole",
-              "Policies": [ {
-                  "PolicyName": "CodeDeploy-EC2-S3",
-                  "PolicyDocument": {
-                      "Version": "2012-10-17",
+                    }
+                  },
+                "EC2Policy": {
+                  "Type": "AWS::IAM::ManagedPolicy",
+                  "Properties": {
+                    "ManagedPolicyName":"CodeDeploy-EC2-S3",
+                    "PolicyDocument": {
+                      "Version" : "2012-10-17",
                       "Statement": [
                         {
                           "Action": [
@@ -44,14 +63,28 @@
                             "s3:List*"
                           ],
                           "Effect": "Allow",
-                          "Resource": "*"
-                          }
-                        ]
-                      }
-
-                      } ]
-                    }
+                          "Resource": {"Ref": "CDARN"}
+                        },
+                        {
+                          "Action": "*",
+                          "Effect": "Allow",
+                          "Resource": {"Ref": "CSARN"}
+                        }
+                      ]
+                    },
+                    "Roles": [ { "Ref": "EC2Role" } ]
+                  }
                   },
+                  "EC2InstanceProfile": {
+                    "Type": "AWS::IAM::InstanceProfile",
+                    "Properties": {
+                      "Path": "/",
+                      "Roles": [ {
+                        "Ref": "EC2Role"
+                        } ],
+                        "InstanceProfileName": "CodeDeployEC2ServiceRole"
+                      }
+                    },
                   "CodeDeployApplication": {
                     "Type": "AWS::CodeDeploy::Application",
                     "Properties": {

@@ -68,20 +68,47 @@
                             "GroupSet": [{"Ref": "WebAppSecurityGroup"}]
                           }
                         ],
-
                         "InstanceType": "t2.micro",
-
                             "UserData": {
                                 "Fn::Base64": {
                                     "Fn::Join": [
                                         "\n",
                                         [
+
                                           "#!/bin/bash -xe ",
-                                          "yum install ruby ntp wget java-1.8.0-openjdk-devel mysql bind-utils git -y"
+
+                                          "yum install ruby ntp wget java-1.8.0-openjdk-devel mysql bind-utils git -y",
+
+                                          "systemctl start ntpd",
+
+                                          "systemctl enable ntpd",
+
+                                          "pwd >> log",
+
+                                          "mkdir temp",
+
+                                          "cd temp",
+
+                                          "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install >> log",
+
+                                          "chmod +x ./install >> log",
+
+                                          "./install auto >> log",
+
+                                          "touch log1",
+
+                                          "cd /",
+
+                                          "/bin/echo 'export s3=\"",{"Ref": "DomainName"},"\"' >> app",
+
+                                          "/bin/echo 'export db=\"",{"Fn::GetAtt": ["DBInstance","Endpoint.Address"]},"\"' >> app",
+
+
                                         ]
                                     ]
                                 }
-                          }
+                          },
+                          "IamInstanceProfile":"CodeDeployEC2ServiceRole"
                         }
                     },
                     "DBSecurityGroup" : {
@@ -145,6 +172,7 @@
                           "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
                         }
                       },
+
 
                       "DBSubnetGroup" : {
                        "Type" : "AWS::RDS::DBSubnetGroup",
