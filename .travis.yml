@@ -18,8 +18,8 @@ script:
 
 
 after_success:
+  - pwd
   - ls
-  - cd ..
   - mkdir codedeploy_artifact
   - pwd
   - cp ../../*.yml .
@@ -27,7 +27,7 @@ after_success:
   - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip target/cloudClass1-1.0-SNAPSHOT.jar *.sh *.yml
   - ls
   - mv csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip codedeploy_artifact/
-  - ls codedeploy_artifact/
+  - ls codedeploy_artifact/*
   
   
 deploy:
