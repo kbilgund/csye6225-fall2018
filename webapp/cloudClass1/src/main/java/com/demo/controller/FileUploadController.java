@@ -64,6 +64,8 @@ public class FileUploadController {
 
         Attachments newAttachment = new Attachments();
 
+        statsCollection.statsd.incrementCounter("file.post");
+
 
         Transactions transactions = transactionRepository.findByUuid(uuid);
 
@@ -106,6 +108,8 @@ public class FileUploadController {
 
         System.out.println("debug controller "+deleteAttachment.getLink());
 
+        statsCollection.statsd.incrementCounter("file.delete");
+
         System.out.println(deleteAttachment.getLink());
         storageService.deleteFile(deleteAttachment.getLink());
 
@@ -138,6 +142,8 @@ public class FileUploadController {
         Attachments deleteAttachment = attachmentsRepository.findById(idAttachment);
         System.out.println(deleteAttachment.getLink());
         storageService.deleteFile(deleteAttachment.getLink());
+
+        statsCollection.statsd.incrementCounter("file.put");
 
 
         Attachments newAttachment = new Attachments();

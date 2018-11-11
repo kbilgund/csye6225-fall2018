@@ -78,6 +78,19 @@
             <version>1.11.431</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sns -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>1.11.438</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>javax.xml.bind</groupId>

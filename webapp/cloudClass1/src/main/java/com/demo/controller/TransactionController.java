@@ -34,6 +34,8 @@ public class TransactionController {
     public ResponseEntity<?> getAllTransaction(){
 
         // which user is requesting
+        statsCollection.statsd.incrementCounter("transaction.get");
+
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
@@ -51,6 +53,8 @@ public class TransactionController {
 
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        statsCollection.statsd.incrementCounter("transaction.post");
+
 
         transactions.setUuid(String.valueOf(UUID.randomUUID()));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -78,6 +82,8 @@ public class TransactionController {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String name = auth.getName();
+        statsCollection.statsd.incrementCounter("transaction.put");
+
 
         Transactions test = transactionRepository.findByUuidAndUser(uuid,new User(name,""));
 
@@ -106,6 +112,8 @@ public class TransactionController {
         Transactions transactions = new Transactions();
         transactions.setUuid(uuid);
 
+
+        statsCollection.statsd.incrementCounter("transaction.delete");
 
         transactionRepository.delete(transactions);
 
