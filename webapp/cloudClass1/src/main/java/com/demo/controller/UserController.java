@@ -60,14 +60,14 @@ public class UserController {
         System.out.println("debug"+user.getName());
         if(userRepository.existsById(user.getName()) == true){
             System.out.println("User exists");
-            return "User already exists!!!";
+            return "{  \"response\" : \"User already exists!!!\" }";
 
         }
         else {
             String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
             User user_1 = new User(user.getName(), encodedPassword);
             userRepository.save(user_1);
-            return "User Added";
+            return "{ \"email\" : \"user.getName()\", \"response\" : \"User Added\" }";
         }
 
 

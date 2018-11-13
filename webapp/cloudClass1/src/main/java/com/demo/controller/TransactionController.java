@@ -119,7 +119,7 @@ public class TransactionController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .contentType(MediaType.TEXT_PLAIN)
-                .body("deleted");
+                .body("{  \"response\" : \"deleted\" }");
 
 
     }

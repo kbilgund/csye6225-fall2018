@@ -56,7 +56,7 @@ public class UserReset {
 
         System.out.println("debug "+publishResult.getMessageId());
 
-        return "Password reset email sent";
+        return "{  \"response\" : \"password email sent\" }";
     }
 
 }
