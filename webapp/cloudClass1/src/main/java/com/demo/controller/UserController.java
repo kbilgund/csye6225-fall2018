@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import com.timgroup.statsd.StatsDClient;
+import com.timgroup.statsd.NonBlockingStatsDClient;
 
 
 
@@ -22,6 +24,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/")
 public class UserController {
 
+
+
     @Autowired
     private UserRepository userRepository;
 
@@ -33,6 +37,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+   // private static final StatsDClient statsd = new NonBlockingStatsDClient("my.prefix", "statsd-host", 8125);
+
 
 
     @RequestMapping(method = RequestMethod.GET )
@@ -48,18 +55,19 @@ public class UserController {
 
     @RequestMapping(value="/register",method = RequestMethod.POST )
     public String createUser(@RequestBody User user) {
+        statsCollection.statsd.incrementCounter("register");
 
         System.out.println("debug"+user.getName());
         if(userRepository.existsById(user.getName()) == true){
             System.out.println("User exists");
-            return "User already exists!!!";
+            return "{  \"response\" : \"User already exists!!!\" }";
 
         }
         else {
             String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
             User user_1 = new User(user.getName(), encodedPassword);
             userRepository.save(user_1);
-            return "User Added";
+            return "{ \"email\" : \"user.getName()\", \"response\" : \"User Added\" }";
         }
 
 
