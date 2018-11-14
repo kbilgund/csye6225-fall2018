@@ -83,11 +83,11 @@
 
                                           "systemctl enable ntpd",
 
-                                          "pwd >> log",
-
                                           "mkdir temp",
 
                                           "cd temp",
+
+                                          "pwd >> log",
 
                                           "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install >> log",
 
@@ -99,15 +99,17 @@
 
                                           "cd /",
 
-
                                           "/bin/echo 'export s3=\"",{"Ref": "DomainName"},"\"' | tr -d '\n' >> app",
 
                                           "/bin/echo '' >> app",
 
-
                                           "/bin/echo 'export db=\"",{"Fn::GetAtt": ["DBInstance","Endpoint.Address"]},"\"' | tr -d '\n' >> app",
 
+                                          "wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
 
+                                          "sudo rpm -U ./amazon-cloudwatch-agent.rpm",
+
+                                          "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:AmazonCloudWatch-linux -s"
                                         ]
                                     ]
                                 }
@@ -152,6 +154,10 @@
                             "ProvisionedThroughput" : {
                                 "ReadCapacityUnits" : "5",
                                 "WriteCapacityUnits" : "5"
+                              },
+                              "TimeToLiveSpecification":{
+                                "AttributeName" : "ttl",
+                                "Enabled" : "true"
                               }
                           }
                       },
@@ -176,7 +182,6 @@
                           "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
                         }
                       },
-
 
                       "DBSubnetGroup" : {
                        "Type" : "AWS::RDS::DBSubnetGroup",
