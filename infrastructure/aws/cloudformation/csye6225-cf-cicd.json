@@ -48,6 +48,7 @@
                } ]
             },
             "RoleName":"CodeDeployEC2ServiceRole",
+            "ManagedPolicyArns":["arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess" , "arn:aws:iam::aws:policy/CloudWatchFullAccess"]
                     }
                   },
                 "EC2Policy": {
