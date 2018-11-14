@@ -8,7 +8,10 @@
        "InternetGatewayName": {
            "Type": "String"
       },
-      "RouteTableName":{
+      "PublicRouteTableName":{
+           "Type": "String"
+      },
+      "PrivateRouteTableName":{
            "Type": "String"
       }
 },
@@ -35,9 +38,12 @@
                 "VpcId": {
                     "Ref": "VPC"
                   },
-                "AvailabilityZone" : "us-east-2a",
+                "AvailabilityZone" : "us-east-1a",
                 "CidrBlock": "10.0.0.0/24",
-                "Tags":[]
+                "Tags":[{
+                  "Key": "Name",
+                  "Value": "PublicSubnet"
+                  }]
             }
           },
           "Subnet2": {
@@ -46,7 +52,7 @@
                   "VpcId": {
                       "Ref": "VPC"
                     },
-                  "AvailabilityZone" : "us-east-2b",
+                  "AvailabilityZone" : "us-east-1b",
                   "CidrBlock": "10.0.1.0/24",
                   "Tags":[]
               }
@@ -57,11 +63,53 @@
                     "VpcId": {
                         "Ref": "VPC"
                       },
-                    "AvailabilityZone" : "us-east-2c",
+                    "AvailabilityZone" : "us-east-1c",
                     "CidrBlock": "10.0.2.0/24",
                     "Tags":[]
                 }
               },
+              "Subnet4": {
+                "Type" : "AWS::EC2::Subnet",
+                "Properties": {
+                      "VpcId": {
+                          "Ref": "VPC"
+                        },
+                      "AvailabilityZone" : "us-east-1a",
+                      "CidrBlock": "10.0.3.0/24",
+                      "Tags":[{
+                        "Key": "Name",
+                        "Value": "PrivateSubnet1"
+                        }]
+                  }
+                },
+                "Subnet5": {
+                  "Type" : "AWS::EC2::Subnet",
+                  "Properties": {
+                        "VpcId": {
+                            "Ref": "VPC"
+                          },
+                        "AvailabilityZone" : "us-east-1b",
+                        "CidrBlock": "10.0.4.0/24",
+                        "Tags":[{
+                          "Key": "Name",
+                          "Value": "PrivateSubnet2"
+                          }]
+                    }
+                  },
+                  "Subnet6": {
+                    "Type" : "AWS::EC2::Subnet",
+                    "Properties": {
+                          "VpcId": {
+                              "Ref": "VPC"
+                            },
+                          "AvailabilityZone" : "us-east-1c",
+                          "CidrBlock": "10.0.5.0/24",
+                          "Tags":[{
+                            "Key": "Name",
+                            "Value": "PrivateSubnet3"
+                            }]
+                      }
+                    },
             "InternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
             "Properties": {
@@ -85,7 +133,7 @@
                     "Ref": "InternetGateway"
                 }
             }
-        },"RouteTable": {
+        },"PublicRouteTable": {
             "Type": "AWS::EC2::RouteTable",
             "Properties": {
                 "VpcId": {
@@ -95,7 +143,23 @@
                     {
                         "Key": "Name",
                         "Value": {
-                            "Ref": "RouteTableName"
+                            "Ref": "PublicRouteTableName"
+                        }
+                    }
+                ]
+            }
+        },
+        "PrivateRouteTable": {
+            "Type": "AWS::EC2::RouteTable",
+            "Properties": {
+                "VpcId": {
+                    "Ref": "VPC"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "PrivateRouteTableName"
                         }
                     }
                 ]
@@ -108,7 +172,7 @@
                 "Ref" : "Subnet1"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
               }
             }
         },
@@ -119,7 +183,7 @@
                 "Ref" : "Subnet2"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
               }
             }
         },
@@ -130,7 +194,40 @@
                 "Ref" : "Subnet3"
               },
               "RouteTableId" : {
-                "Ref" : "RouteTable"
+                "Ref" : "PublicRouteTable"
+              }
+            }
+        },
+        "Subnet4Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet4"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
+              }
+            }
+        },
+        "Subnet5Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet5"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
+              }
+            }
+        },
+        "Subnet6Association":{
+          "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties" : {
+              "SubnetId" : {
+                "Ref" : "Subnet6"
+              },
+              "RouteTableId" : {
+                "Ref" : "PrivateRouteTable"
               }
             }
         },
@@ -142,7 +239,7 @@
                     "Ref": "InternetGateway"
                 },
                 "RouteTableId": {
-                    "Ref": "RouteTable"
+                    "Ref": "PublicRouteTable"
                 }
             }
         }

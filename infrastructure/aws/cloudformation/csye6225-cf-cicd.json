@@ -1,0 +1,118 @@
+{
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Description": "CI/CD Stack",
+   "Parameters" : {
+     "DomainName" :{
+       "Type": "String"
+     },
+     "CDARN" :{
+       "Type": "String"
+     },
+     "CSARN" :{
+       "Type": "String"
+     }
+   },
+   "Resources": {
+      "CDRole": {
+         "Type": "AWS::IAM::Role",
+         "Properties": {
+            "AssumeRolePolicyDocument": {
+               "Version" : "2012-10-17",
+               "Statement": [ {
+                  "Effect": "Allow",
+                  "Principal": {
+                     "Service": [ "codedeploy.amazonaws.com" ]
+                  },
+                  "Action": [ "sts:AssumeRole" ]
+               } ]
+            },
+            "RoleName":"CodeDeployServiceRole",
+            "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"]
+         }
+      },
+      "S3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {"BucketName" : {"Ref": "DomainName"}}
+      },
+      "EC2Role": {
+         "Type": "AWS::IAM::Role",
+         "Properties": {
+            "AssumeRolePolicyDocument": {
+               "Version" : "2012-10-17",
+               "Statement": [ {
+                  "Effect": "Allow",
+                  "Principal": {
+                     "Service": [ "ec2.amazonaws.com" ]
+                  },
+                  "Action": [ "sts:AssumeRole" ]
+               } ]
+            },
+            "RoleName":"CodeDeployEC2ServiceRole",
+            "ManagedPolicyArns":["arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess" , "arn:aws:iam::aws:policy/CloudWatchFullAccess"]
+                    }
+                  },
+                "EC2Policy": {
+                  "Type": "AWS::IAM::ManagedPolicy",
+                  "Properties": {
+                    "ManagedPolicyName":"CodeDeploy-EC2-S3",
+                    "PolicyDocument": {
+                      "Version" : "2012-10-17",
+                      "Statement": [
+                        {
+                          "Action": [
+                            "s3:Get*",
+                            "s3:List*"
+                          ],
+                          "Effect": "Allow",
+                          "Resource": {"Ref": "CDARN"}
+                        },
+                        {
+                          "Action": "*",
+                          "Effect": "Allow",
+                          "Resource": {"Ref": "CSARN"}
+                        }
+                      ]
+                    },
+                    "Roles": [ { "Ref": "EC2Role" } ]
+                  }
+                  },
+                  "EC2InstanceProfile": {
+                    "Type": "AWS::IAM::InstanceProfile",
+                    "Properties": {
+                      "Path": "/",
+                      "Roles": [ {
+                        "Ref": "EC2Role"
+                        } ],
+                        "InstanceProfileName": "CodeDeployEC2ServiceRole"
+                      }
+                    },
+                  "CodeDeployApplication": {
+                    "Type": "AWS::CodeDeploy::Application",
+                    "Properties": {
+                      "ApplicationName" : "csye6225_cd",
+                      "ComputePlatform": "Server"
+                    }
+                  },
+                  "DeploymentGroup" : {
+                    "Type" : "AWS::CodeDeploy::DeploymentGroup",
+                    "Properties" : {
+                      "ApplicationName" : {"Ref" : "CodeDeployApplication"},
+                      "DeploymentGroupName": "csye6225_deploy",
+                      "ServiceRoleArn" : { "Fn::GetAtt" : [
+                        "CDRole", "Arn"
+                        ]
+                      },
+                      "DeploymentStyle": {
+                        "DeploymentType": "IN_PLACE",
+                        "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
+                      },
+                      "Ec2TagFilters" : [{
+                        "Key" : "Name",
+                        "Value" : "centOS",
+                        "Type" : "KEY_AND_VALUE"
+                      }],
+
+                      }
+                    }
+      }
+}
