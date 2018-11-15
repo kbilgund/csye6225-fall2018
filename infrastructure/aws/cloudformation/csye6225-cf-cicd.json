@@ -27,7 +27,7 @@
                } ]
             },
             "RoleName":"CodeDeployServiceRole",
-            "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"]
+            "ManagedPolicyArns":["arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole" ,"arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda" , "arn:aws:iam::aws:policy/AmazonS3FullAccess"]
          }
       },
       "S3Bucket": {
