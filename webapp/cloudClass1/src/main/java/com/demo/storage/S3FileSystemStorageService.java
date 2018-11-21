@@ -42,7 +42,7 @@ public class S3FileSystemStorageService implements StorageService{
 
     @Override
     public String store(MultipartFile file,String user) {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename())+user;
+        String filename = StringUtils.cleanPath(file.getOriginalFilename())+"_"+user;
         try {
             if (file.isEmpty()) {
                 System.out.println();
@@ -72,19 +72,19 @@ public class S3FileSystemStorageService implements StorageService{
                 .build();
 
         String name = file.getOriginalFilename();
-        File file_temp = new File(rootLocation.toString()+"/"+name);
+        File file_temp = new File(rootLocation.toString()+"/"+filename);
 
         System.out.println("debug" + file_temp.getAbsolutePath());
 
         s3client.putObject(
                 bktname,
-                name,
+                filename,
                 file_temp
         );
 
         file_temp.delete();
 
-        String fileLink =  s3client.getUrl(bktname, name).toExternalForm();
+        String fileLink =  s3client.getUrl(bktname, filename).toExternalForm();
 
 
 
