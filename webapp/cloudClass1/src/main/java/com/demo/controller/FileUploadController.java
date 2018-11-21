@@ -80,9 +80,10 @@ public class FileUploadController {
         }
 
 
-        String pathOfFile = storageService.store(file);
+        String pathOfFile = storageService.store(file,user_name);
        // redirectAttributes.addFlashAttribute("message","You successfully uploaded " + file.getOriginalFilename() + "!");
         System.out.println("saved locally");
+
         String name = file.getOriginalFilename();
      //   URL url = getClass().getResource(name);
         System.out.println(name);
@@ -148,7 +149,7 @@ public class FileUploadController {
 
         Attachments newAttachment = new Attachments();
         Transactions transactions = transactionRepository.findByUuid(uuid);
-        String pathOfFile = storageService.store(file);
+        String pathOfFile = storageService.store(file,"temp");
 
         newAttachment.setId(idAttachment);
         newAttachment.setLink(pathOfFile);

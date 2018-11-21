@@ -66,6 +66,7 @@ public class TransactionController {
 
         transactionRepository.save(transactions);
 
+
         String temp_uuid = transactions.getUuid();
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -98,12 +99,9 @@ public class TransactionController {
         transactions.setUser(new User(name,""));
         transactionRepository.save(transactions);
 
-        String temp_uuid = transactions.getUuid();
-
         return ResponseEntity.status(HttpStatus.CREATED)
-                .contentType(MediaType.TEXT_PLAIN)
-                .body("{  \"response\" : \""+temp_uuid+"\" }");
-
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body("{  \"response\" : \"modified\" }");
 
 
     }

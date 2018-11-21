@@ -41,8 +41,8 @@ public class S3FileSystemStorageService implements StorageService{
     public String bktname;
 
     @Override
-    public String store(MultipartFile file) {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+    public String store(MultipartFile file,String user) {
+        String filename = StringUtils.cleanPath(file.getOriginalFilename())+user;
         try {
             if (file.isEmpty()) {
                 System.out.println();
