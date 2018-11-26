@@ -37,119 +37,51 @@
     "LoadBalancerSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
-              "Tags": [
-                  {
-                      "Key": "Name",
-                      "Value": "csye6225-load"
-                  }
-              ],
+              "Tags": [{"Key": "Name","Value": "csye6225-load"}],
                   "GroupDescription" : "Enable HTTP access on the 80 and 443 port",
                   "VpcId" : { "Ref" : "VpcId" },
-                  "SecurityGroupIngress" : [
-                      {
-                        "IpProtocol" : "tcp",
-                          "FromPort" : "80",
-                          "ToPort" : "80",
-                          "CidrIp" : "0.0.0.0/0"},
-                      {
-                        "IpProtocol" : "tcp",
-                          "FromPort" : "443",
-                          "ToPort" : "443",
-                          "CidrIp" : "0.0.0.0/0"},
-                      ]
-                    }
-                  },
+                  "SecurityGroupIngress" : [{"IpProtocol" : "tcp","FromPort" : "80","ToPort" : "80","CidrIp" : "0.0.0.0/0"},
+                      {"IpProtocol" : "tcp","FromPort" : "443","ToPort" : "443","CidrIp" : "0.0.0.0/0"}]}},
                   "AutoScalingSecurityGroup" : {
-                          "Type" : "AWS::EC2::SecurityGroup",
+                        "Type" : "AWS::EC2::SecurityGroup",
                           "Properties" : {
-                            "Tags": [
-                                {
-                                    "Key": "Name",
-                                    "Value": "csye6225-autoscaling"
-                                }
-                            ],
+                            "Tags": [{"Key": "Name","Value": "csye6225-autoscaling"}],
                                 "GroupDescription" : "Enable HTTP access on the configured port",
                                 "VpcId" : { "Ref" : "VpcId" },
-                                "SecurityGroupIngress" : [ {
-                                  "IpProtocol" : "tcp",
-                                      "FromPort" : "22",
-                                      "ToPort" : "22",
-                                      "CidrIp" : "0.0.0.0/0"},
-                                    {
-                                      "IpProtocol" : "tcp",
-                                        "FromPort" : "80",
-                                        "ToPort" : "80",
-                                        "SourceSecurityGroupId" : { "Ref" : "LoadBalancerSecurityGroup" }
-                                      },
-                                    ]
-                                  }
-                                },
+                                "SecurityGroupIngress" : [ {"IpProtocol" : "tcp","FromPort" : "22","ToPort" : "22","CidrIp" : "0.0.0.0/0"},
+                                    {"IpProtocol" : "tcp","FromPort" : "80","ToPort" : "80","SourceSecurityGroupId" : { "Ref" : "LoadBalancerSecurityGroup" }
+                                      }]}},
                                 "loadBalancer" : {
                                   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
-                                  "Properties": {
-                                    "Scheme" : "internet-facing",
-                                    "Name" : "csye6225-load",
+                                  "Properties": {"Scheme" : "internet-facing","Name" : "csye6225-load",
                                     "Subnets" : [ {"Ref": "ELBId1"} , {"Ref": "ELBId2"} , {"Ref": "ELBId3"}  ],
-                                    "LoadBalancerAttributes" : [
-                                      { "Key" : "idle_timeout.timeout_seconds", "Value" : "50" }
-                                    ],
+                                    "LoadBalancerAttributes" : [{ "Key" : "idle_timeout.timeout_seconds", "Value" : "50" }],
                                     "SecurityGroups": [{"Ref":"LoadBalancerSecurityGroup"}],
-                                    "Tags" : [
-                                    { "Key" : "key", "Value" : "value" }
-                                ]
-                              }
-                            },
-
+                                    "Tags" : [{ "Key" : "key", "Value" : "value" }]}},
                             "LoadBalancerListener":{
                                 "Type": "AWS::ElasticLoadBalancingV2::Listener",
-                                "Properties":{
-                                  "LoadBalancerArn": {"Ref": "loadBalancer"},
-                                  "Port": 443,
-                                  "Protocol": "HTTPS",
-                                  "Certificates": [
-                                            {
-                                                "CertificateArn": {"Ref": "CertificateArn"}
-                                            }
-                                        ],
-                                  "DefaultActions": [{
-                                    "Type": "forward",
-                                    "TargetGroupArn": { "Ref": "TargetGroup" }
-                                    }],
+                                "Properties":{"LoadBalancerArn": {"Ref": "loadBalancer"},"Port": 443,"Protocol": "HTTPS",
+                                  "Certificates": [{"CertificateArn": {"Ref": "CertificateArn"}}],
+                                  "DefaultActions": [{"Type": "forward","TargetGroupArn": { "Ref": "TargetGroup" }}],
                                 }
                             },
                             "LoadBalancerListener80":{
                                 "Type": "AWS::ElasticLoadBalancingV2::Listener",
-                                "Properties":{
-                                  "LoadBalancerArn": {"Ref": "loadBalancer"},
-                                  "Port": 80,
+                                "Properties":{"LoadBalancerArn": {"Ref": "loadBalancer"},"Port": 80,
                                   "Protocol": "HTTP",
-                                  "DefaultActions": [{
-                                    "Type": "forward",
-                                    "TargetGroupArn": { "Ref": "TargetGroup" }
-                                    }],
+                                  "DefaultActions": [{"Type": "forward","TargetGroupArn": { "Ref": "TargetGroup" }}],
                                 }
                             },
                             "TargetGroup": {
                                     "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
                                     "Properties": {
-                                        "HealthCheckPath" : "/",
-                                        "HealthCheckPort" : "80",
-                                        "Port": 80,
-                                        "Protocol": "HTTP",
-                                        "TargetType": "instance",
-                                        "VpcId": {
-                                            "Ref": "VpcId"
-                                        }
-                                    }
-                                },
+                                        "HealthCheckPath" : "/health","HealthCheckPort" : "80","Port": 80,"Protocol": "HTTP","TargetType": "instance",
+                                        "VpcId": {"Ref": "VpcId"}}},
                                 "Route53":{
                                   "Type" : "AWS::Route53::RecordSet",
                                   "Properties" : {
-                                    "HostedZoneName": {"Ref": "Domain"},
-                                    "Name": {"Ref": "Domain"},
-                                    "Type": "A",
-                                    "AliasTarget" : {
-                                            "HostedZoneId" : { "Fn::GetAtt" : ["loadBalancer", "CanonicalHostedZoneID"] },
+                                    "HostedZoneName": {"Ref": "Domain"},"Name": {"Ref": "Domain"},"Type": "A",
+                                    "AliasTarget" : {"HostedZoneId" : { "Fn::GetAtt" : ["loadBalancer", "CanonicalHostedZoneID"] },
                                             "DNSName" : { "Fn::GetAtt" : ["loadBalancer","DNSName"] }
                                         }
                                 }
@@ -157,53 +89,31 @@
                           "LaunchConfig":{
                              "Type" : "AWS::AutoScaling::LaunchConfiguration",
                              "Properties" : {
-                                "AssociatePublicIpAddress" : true,
-                                "KeyName" : "ec2_centos",
-                                "ImageId": "ami-9887c6e7",
-                                "InstanceType": "t2.micro",
-                                "IamInstanceProfile":"CodeDeployEC2ServiceRole",
-                                "LaunchConfigurationName" : "asg_launch_config",
+                                "AssociatePublicIpAddress" : true,"KeyName" : "ec2_centos","ImageId": "ami-9887c6e7","InstanceType": "t2.micro",
+                                "IamInstanceProfile":"CodeDeployEC2ServiceRole","LaunchConfigurationName" : "asg_launch_config",
                                 "SecurityGroups" : [{"Ref": "AutoScalingSecurityGroup"}],
                                 "UserData": {
                                     "Fn::Base64": {
                                         "Fn::Join": [
                                             "\n",
                                             [
-
                                               "#!/bin/bash -xe ",
-
                                               "yum install ruby ntp wget java-1.8.0-openjdk-devel mysql bind-utils git -y",
-
                                               "systemctl start ntpd",
-
                                               "systemctl enable ntpd",
-
                                               "mkdir temp",
-
                                               "cd temp",
-
                                               "pwd >> log",
-
                                               "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install >> log",
-
                                               "chmod +x ./install >> log",
-
                                               "./install auto >> log",
-
                                               "touch log1",
-
                                               "cd /",
-
                                               "/bin/echo 'export s3=\"",{"Ref": "DomainName"},"\"' | tr -d '\n' >> app",
-
                                               "/bin/echo '' >> app",
-
                                               "/bin/echo 'export db=\"",{"Fn::GetAtt": ["DBInstance","Endpoint.Address"]},"\"' | tr -d '\n' >> app",
-
                                               "wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
-
                                               "sudo rpm -U ./amazon-cloudwatch-agent.rpm",
-
                                               "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:AmazonCloudWatch-linux -s"
                                             ]
                                         ]
@@ -223,22 +133,12 @@
                                "MinSize" : "3",
                                "MaxSize" : "10",
                                "TargetGroupARNs":[{"Ref":"TargetGroup"}],
-                               "Tags": [
-                                   {
-                                       "Key": "Name",
-                                       "Value": "centOS",
-                                       "PropagateAtLaunch" : "true"
-                                   }
-                               ],
-                                }
-                              },
+                               "Tags": [{"Key": "Name","Value": "centOS","PropagateAtLaunch" : "true"}]}},
                               "WebServerScaleUpPolicy": {
                             "Type": "AWS::AutoScaling::ScalingPolicy",
                             "Properties": {
                               "AdjustmentType": "ChangeInCapacity",
-                              "AutoScalingGroupName": {
-                                "Ref": "WebServerGroup"
-                              },
+                              "AutoScalingGroupName": {"Ref": "WebServerGroup"},
                               "Cooldown": "60",
                               "ScalingAdjustment": "1"
                             }
@@ -247,9 +147,7 @@
                             "Type": "AWS::AutoScaling::ScalingPolicy",
                             "Properties": {
                               "AdjustmentType": "ChangeInCapacity",
-                              "AutoScalingGroupName": {
-                                "Ref": "WebServerGroup"
-                              },
+                              "AutoScalingGroupName": {"Ref": "WebServerGroup"},
                               "Cooldown": "60",
                               "ScalingAdjustment": "-1"
                             }
@@ -264,22 +162,10 @@
                               "Period": "300",
                               "EvaluationPeriods": "2",
                               "Threshold": "10",
-                              "AlarmActions": [
-                                {
-                                  "Ref": "WebServerScaleUpPolicy"
-                                }
-                              ],
+                              "AlarmActions": [{"Ref": "WebServerScaleUpPolicy"}],
                               "Dimensions": [
-                                {
-                                  "Name": "AutoScalingGroupName",
-                                  "Value": {
-                                    "Ref": "WebServerGroup"
-                                  }
-                                }
-                              ],
-                              "ComparisonOperator": "GreaterThanThreshold"
-                            }
-                          },
+                                {"Name": "AutoScalingGroupName","Value": {"Ref": "WebServerGroup"}}],
+                                "ComparisonOperator": "GreaterThanThreshold"}},
                           "CPUAlarmLow": {
                             "Type": "AWS::CloudWatch::Alarm",
                             "Properties": {
@@ -290,66 +176,25 @@
                               "Period": "300",
                               "EvaluationPeriods": "2",
                               "Threshold": "8",
-                              "AlarmActions": [
-                                {
-                                  "Ref": "WebServerScaleDownPolicy"
-                                }
-                              ],
+                              "AlarmActions": [{"Ref": "WebServerScaleDownPolicy"}],
                               "Dimensions": [
-                                {
-                                  "Name": "AutoScalingGroupName",
-                                  "Value": {
-                                    "Ref": "WebServerGroup"
-                                  }
-                                }
-                              ],
-                              "ComparisonOperator": "LessThanThreshold"
-                            }
-                          },
+                                {"Name": "AutoScalingGroupName","Value": {"Ref": "WebServerGroup"}}],
+                              "ComparisonOperator": "LessThanThreshold"}},
                     "DBSecurityGroup" : {
                             "Type" : "AWS::EC2::SecurityGroup",
                             "Properties" : {
-                              "Tags": [
-                                  {
-                                      "Key": "Name",
-                                      "Value": "csye6225-rds"
-                                  }
-                              ],
+                              "Tags": [{"Key": "Name","Value": "csye6225-rds"}],
                             "GroupDescription" : "Created from the RDS Management Console",
                             "VpcId" : { "Ref" : "VpcId" },
-                            "SecurityGroupIngress" : [ {
-                              "IpProtocol" : "tcp",
-                              "FromPort" : "3306",
-                              "ToPort" : "3306",
-                              "CidrIp" : "0.0.0.0/0"}
-                                ]
-                            }
-                      },
+                            "SecurityGroupIngress" : [{"IpProtocol" : "tcp","FromPort" : "3306","ToPort" : "3306","CidrIp" : "0.0.0.0/0"}]}},
                       "DBTable": {
                           "Type": "AWS::DynamoDB::Table",
                           "Properties": {
                             "TableName": "csye6225",
-                            "AttributeDefinitions" : [
-                              {
-                                "AttributeName" : "id",
-                                "AttributeType" : "S"
-                            }],
-                            "KeySchema" : [
-                              {
-                                "AttributeName" : "id",
-                                "KeyType" : "HASH"
-                              }
-                            ],
-                            "ProvisionedThroughput" : {
-                                "ReadCapacityUnits" : "5",
-                                "WriteCapacityUnits" : "5"
-                              },
-                              "TimeToLiveSpecification":{
-                                "AttributeName" : "ttl",
-                                "Enabled" : "true"
-                              }
-                          }
-                      },
+                            "AttributeDefinitions" : [{"AttributeName" : "id","AttributeType" : "S"}],
+                            "KeySchema" : [{"AttributeName" : "id","KeyType" : "HASH"}],
+                            "ProvisionedThroughput" : {"ReadCapacityUnits" : "5","WriteCapacityUnits" : "5"},
+                              "TimeToLiveSpecification":{"AttributeName" : "ttl","Enabled" : "true"}}},
                       "S3Bucket": {
                           "Type": "AWS::S3::Bucket",
                           "Properties": {"BucketName" : {"Ref": "DomainName"}}
@@ -369,24 +214,19 @@
                           "PubliclyAccessible":"False",
                           "VPCSecurityGroups":[{"Ref": "DBSecurityGroup"}],
                           "DBSubnetGroupName": {"Ref": "DBSubnetGroup"}
-                        }
-                      },
-
+                        }},
                       "DBSubnetGroup" : {
                        "Type" : "AWS::RDS::DBSubnetGroup",
-                       "Properties" : {
-                          "DBSubnetGroupDescription" : "DBSubnetGroup",
+                       "Properties" : {"DBSubnetGroupDescription" : "DBSubnetGroup",
                           "SubnetIds" : [ {"Ref": "GroupSubnetId1"}, {"Ref": "GroupSubnetId2"} ],
                           "Tags" : [ {"Key" : "Name", "Value" : "Subnet for RDS instances"} ]
-                       }
-                    },
+                       }},
                     "CodeDeployApplication": {
                       "Type": "AWS::CodeDeploy::Application",
                       "Properties": {
                         "ApplicationName" : "csye6225_cd",
                         "ComputePlatform": "Server"
-                      }
-                    },
+                      }},
                     "DeploymentGroup" : {
                       "Type" : "AWS::CodeDeploy::DeploymentGroup",
                       "Properties" : {
@@ -397,13 +237,8 @@
                           "DeploymentType": "IN_PLACE",
                           "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
                         },
-                        "Ec2TagFilters" : [{
-                          "Key" : "Name",
-                          "Value" : "centOS",
-                          "Type" : "KEY_AND_VALUE"
-                        }],
-                        "AutoScalingGroups":[{"Ref": "WebServerGroup"}],
-                        }
+                        "Ec2TagFilters" : [{"Key" : "Name","Value" : "centOS","Type" : "KEY_AND_VALUE"}],
+                        "AutoScalingGroups":[{"Ref": "WebServerGroup"}]}
                       },
                       "WAF":{
                         "Type" : "AWS::WAFRegional::WebACL",
@@ -414,72 +249,27 @@
                           "MetricName" : "test",
                           "Name" : "csye6225-WAF",
                           "Rules":[
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 10,
-                              "RuleId": {"Ref":"wafrSizeRestrictionRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 20,
-                              "RuleId": {"Ref":"wafrBlacklistIpRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 30,
-                              "RuleId": {"Ref":"wafrAuthTokenRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 40,
-                              "RuleId": {"Ref":"wafrSQLiRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 50,
-                              "RuleId": {"Ref":"wafrXSSRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 60,
-                              "RuleId": {"Ref":"wafrPathsRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 80,
-                              "RuleId": {"Ref":"wafrCSRFRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 90,
-                              "RuleId": {"Ref":"wafrServerSideIncludeRule"}
-                            },
-                            {
-                              "Action": {
-                                "Type": "BLOCK"
-                              },
-                              "Priority": 100,
-                              "RuleId": {"Ref":"wafrAdminAccessRule"}
-                            }
-                          ]
-                        }
-                      },
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 10,"RuleId": {"Ref":"wafrSizeRestrictionRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 20,"RuleId": {"Ref":"wafrBlacklistIpRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 30,"RuleId": {"Ref":"wafrAuthTokenRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 40,"RuleId": {"Ref":"wafrSQLiRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 50,"RuleId": {"Ref":"wafrXSSRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 60,"RuleId": {"Ref":"wafrPathsRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 70,"RuleId": {"Ref":"wafrPHPInsecureRule"}},
+                            {"Action": {"Type": "COUNT"},
+                              "Priority": 80,"RuleId": {"Ref":"wafrCSRFRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 90,"RuleId": {"Ref":"wafrServerSideIncludeRule"}},
+                            {"Action": {"Type": "BLOCK"},
+                              "Priority": 100,"RuleId": {"Ref":"wafrAdminAccessRule"}}
+                          ]}},
                       "MyWebACLAssociation": {
                         "Type": "AWS::WAFRegional::WebACLAssociation",
                         "Properties": {
@@ -767,7 +557,7 @@
                                 "Type": "URI"
                               },
                               "PositionalConstraint": "STARTS_WITH",
-                              "TargetString": "/health",
+                              "TargetString": "/admin",
                               "TextTransformation": "URL_DECODE"
                             }
                           ]
@@ -804,7 +594,121 @@
                           ]
                         }
                       },
-
+                      "wafrPHPInsecureQSStringSet": {
+                        "Type": "AWS::WAFRegional::ByteMatchSet",
+                        "Properties": {
+                          "Name":   "match-php-insecure-var-refs",
+                          "ByteMatchTuples": [
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "_SERVER[",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "_ENV[",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "auto_prepend_file=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "auto_append_file=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "allow_url_include=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "disable_functions=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "open_basedir=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "safe_mode=",
+                              "TextTransformation": "URL_DECODE"
+                            }
+                          ]
+                        }
+                      },
+                      "wafrPHPInsecureURIStringSet": {
+                        "Type": "AWS::WAFRegional::ByteMatchSet",
+                        "Properties": {
+                          "Name":   "match-php-insecure-uri",
+                          "ByteMatchTuples": [
+                            {
+                              "FieldToMatch": {
+                                "Type": "URI"
+                              },
+                              "PositionalConstraint": "ENDS_WITH",
+                              "TargetString": "php",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "URI"
+                              },
+                              "PositionalConstraint": "ENDS_WITH",
+                              "TargetString": "/",
+                              "TextTransformation": "URL_DECODE"
+                            }
+                          ]
+                        }
+                      },
+                      "wafrPHPInsecureRule": {
+                        "Type": "AWS::WAFRegional::Rule",
+                        "Properties": {
+                          "MetricName": "detectphpinsecure",
+                          "Name":"detect-php-insecure",
+                          "Predicates": [
+                            {
+                              "Type": "ByteMatch",
+                              "Negated": false,
+                              "DataId": {"Ref": "wafrPHPInsecureQSStringSet"}
+                            },
+                            {
+                              "Type": "ByteMatch",
+                              "Negated": false,
+                              "DataId": {"Ref": "wafrPHPInsecureURIStringSet"}
+                            }
+                          ]
+                        }
+                      },
                       "wafrSizeRestrictionSet": {
                         "Type": "AWS::WAFRegional::SizeConstraintSet",
                         "Properties": {
@@ -816,7 +720,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 512
+                              "Size": 5120
                             },
                             {
                               "FieldToMatch": {
@@ -824,7 +728,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 1024
+                              "Size": 10240
                             },
                             {
                               "FieldToMatch": {
@@ -832,7 +736,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 4096
+                              "Size": 2000000
                             },
                             {
                               "FieldToMatch": {
@@ -841,7 +745,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 4093
+                              "Size": 40930
                             }
                           ]
                         }
@@ -1039,7 +943,6 @@
                             }
                           ]
                         }
-                      },
+                  },
 }
-
 }
