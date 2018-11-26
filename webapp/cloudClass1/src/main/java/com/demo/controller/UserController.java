@@ -53,6 +53,15 @@ public class UserController {
         return ResponseEntity.ok(currentTime);
     }
 
+    @RequestMapping(value="/health",method = RequestMethod.GET )
+    public ResponseEntity<?> health(){
+
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        FileSystemStorageService.testupload();
+        return ResponseEntity.ok(currentTime);
+    }
+
     @RequestMapping(value="/register",method = RequestMethod.POST )
     public String createUser(@RequestBody User user) {
         statsCollection.statsd.incrementCounter("register");

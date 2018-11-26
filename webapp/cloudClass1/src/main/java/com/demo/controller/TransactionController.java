@@ -67,10 +67,11 @@ public class TransactionController {
         transactionRepository.save(transactions);
 
 
+        String temp_uuid = transactions.getUuid();
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.TEXT_PLAIN)
-                .body("{  \"response\" : \"transaction_created\" }");
+                .body("{  \"response\" : \""+temp_uuid+"\" }");
 
 
     }
