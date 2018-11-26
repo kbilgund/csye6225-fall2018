@@ -86,33 +86,6 @@
                         "InstanceProfileName": "CodeDeployEC2ServiceRole"
                       }
                     },
-                  "CodeDeployApplication": {
-                    "Type": "AWS::CodeDeploy::Application",
-                    "Properties": {
-                      "ApplicationName" : "csye6225_cd",
-                      "ComputePlatform": "Server"
-                    }
-                  },
-                  "DeploymentGroup" : {
-                    "Type" : "AWS::CodeDeploy::DeploymentGroup",
-                    "Properties" : {
-                      "ApplicationName" : {"Ref" : "CodeDeployApplication"},
-                      "DeploymentGroupName": "csye6225_deploy",
-                      "ServiceRoleArn" : { "Fn::GetAtt" : [
-                        "CDRole", "Arn"
-                        ]
-                      },
-                      "DeploymentStyle": {
-                        "DeploymentType": "IN_PLACE",
-                        "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
-                      },
-                      "Ec2TagFilters" : [{
-                        "Key" : "Name",
-                        "Value" : "centOS",
-                        "Type" : "KEY_AND_VALUE"
-                      }],
 
-                      }
-                    }
       }
 }

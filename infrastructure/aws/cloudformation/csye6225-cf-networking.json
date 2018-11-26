@@ -54,7 +54,10 @@
                     },
                   "AvailabilityZone" : "us-east-1b",
                   "CidrBlock": "10.0.1.0/24",
-                  "Tags":[]
+                  "Tags":[{
+                    "Key": "Name",
+                    "Value": "AZ1"
+                    }]
               }
             },
             "Subnet3": {
@@ -65,7 +68,10 @@
                       },
                     "AvailabilityZone" : "us-east-1c",
                     "CidrBlock": "10.0.2.0/24",
-                    "Tags":[]
+                    "Tags":[{
+                      "Key": "Name",
+                      "Value": "AZ2"
+                      }]
                 }
               },
               "Subnet4": {
