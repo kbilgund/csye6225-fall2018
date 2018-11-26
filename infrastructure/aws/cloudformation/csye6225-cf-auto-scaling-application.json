@@ -132,7 +132,7 @@
                             "TargetGroup": {
                                     "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
                                     "Properties": {
-                                        "HealthCheckPath" : "/",
+                                        "HealthCheckPath" : "/health",
                                         "HealthCheckPort" : "80",
                                         "Port": 80,
                                         "Protocol": "HTTP",
@@ -460,6 +460,13 @@
                               "Action": {
                                 "Type": "BLOCK"
                               },
+                              "Priority": 70,
+                              "RuleId": {"Ref":"wafrPHPInsecureRule"}
+                            },
+                            {
+                              "Action": {
+                                "Type": "COUNT"
+                              },
                               "Priority": 80,
                               "RuleId": {"Ref":"wafrCSRFRule"}
                             },
@@ -767,7 +774,7 @@
                                 "Type": "URI"
                               },
                               "PositionalConstraint": "STARTS_WITH",
-                              "TargetString": "/health",
+                              "TargetString": "/admin",
                               "TextTransformation": "URL_DECODE"
                             }
                           ]
@@ -804,7 +811,121 @@
                           ]
                         }
                       },
-
+                      "wafrPHPInsecureQSStringSet": {
+                        "Type": "AWS::WAFRegional::ByteMatchSet",
+                        "Properties": {
+                          "Name":   "match-php-insecure-var-refs",
+                          "ByteMatchTuples": [
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "_SERVER[",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "_ENV[",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "auto_prepend_file=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "auto_append_file=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "allow_url_include=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "disable_functions=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "open_basedir=",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "QUERY_STRING"
+                              },
+                              "PositionalConstraint": "CONTAINS",
+                              "TargetString": "safe_mode=",
+                              "TextTransformation": "URL_DECODE"
+                            }
+                          ]
+                        }
+                      },
+                      "wafrPHPInsecureURIStringSet": {
+                        "Type": "AWS::WAFRegional::ByteMatchSet",
+                        "Properties": {
+                          "Name":   "match-php-insecure-uri",
+                          "ByteMatchTuples": [
+                            {
+                              "FieldToMatch": {
+                                "Type": "URI"
+                              },
+                              "PositionalConstraint": "ENDS_WITH",
+                              "TargetString": "php",
+                              "TextTransformation": "URL_DECODE"
+                            },
+                            {
+                              "FieldToMatch": {
+                                "Type": "URI"
+                              },
+                              "PositionalConstraint": "ENDS_WITH",
+                              "TargetString": "/",
+                              "TextTransformation": "URL_DECODE"
+                            }
+                          ]
+                        }
+                      },
+                      "wafrPHPInsecureRule": {
+                        "Type": "AWS::WAFRegional::Rule",
+                        "Properties": {
+                          "MetricName": "detectphpinsecure",
+                          "Name":"detect-php-insecure",
+                          "Predicates": [
+                            {
+                              "Type": "ByteMatch",
+                              "Negated": false,
+                              "DataId": {"Ref": "wafrPHPInsecureQSStringSet"}
+                            },
+                            {
+                              "Type": "ByteMatch",
+                              "Negated": false,
+                              "DataId": {"Ref": "wafrPHPInsecureURIStringSet"}
+                            }
+                          ]
+                        }
+                      },
                       "wafrSizeRestrictionSet": {
                         "Type": "AWS::WAFRegional::SizeConstraintSet",
                         "Properties": {
@@ -816,7 +937,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 512
+                              "Size": 5120
                             },
                             {
                               "FieldToMatch": {
@@ -824,7 +945,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 1024
+                              "Size": 10240
                             },
                             {
                               "FieldToMatch": {
@@ -832,7 +953,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 4096
+                              "Size": 2000000
                             },
                             {
                               "FieldToMatch": {
@@ -841,7 +962,7 @@
                               },
                               "TextTransformation": "NONE",
                               "ComparisonOperator": "GT",
-                              "Size": 4093
+                              "Size": 40930
                             }
                           ]
                         }
